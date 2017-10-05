@@ -4,9 +4,14 @@ import React, {Component} from 'react';
 class Message extends Component {
 
   render() {
+    const listNotifications = this.props.notifications.map((notification) =>
+      <div key={notification.id} className="message">
+        {notification.content}
+      </div>
+    );
     return (
-      <div class="message system">
-        Anonymous1 changed their name to nomnom.
+      <div className="message system">
+        {listNotifications}
       </div>
     );
   }
