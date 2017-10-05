@@ -9,33 +9,43 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentUser: {name: "Bob"}, // optional. if currentUser is not defined, it means the user is Anonymous
-      messages: [
-        {
-          id: 1,
-          username: "Bob",
-          content: "Has anyone seen my marbles?",
-        },
-        {
-          id: 2,
-          username: "Anonymous",
-          content: "No, I think you lost them. You lost your marbles Bob. You lost them for good."
-        }
-      ]
+      currentUser: {name: "Bob"},
+      messages: []
+    };
+    this.onNewMessage = this.onNewMessage.bind(this);
+    this.onNewUser = this.onNewUser.bind(this);
+  }
+
+  componentDidMount() {
+    this.state.webSocket = new WebSocket("ws://localhost:3001");
+    this.state.webSocket.addEventListener('message', (event) => {
+      const broadcastMessage = (JSON.parse(event.data));
+      const messages = this.state.messages.concat(broadcastMessage);
+      this.setState({messages : messages});
+    })
+  }
+
+  onNewMessage(messageContent) {
+    const newMessage = {username : this.state.currentUser.name, content : messageContent};
+    if (true) {   //add error handling
+      this.state.webSocket.send(JSON.stringify(newMessage));
     }
   }
 
+  onNewUser(username) {
+    this.state.currentUser.name = username;
+  }
+
   render() {
-    console.log("Rendering <App />");
     return (
       <div>
         <nav className="navbar">
           <a href="/" className="navbar-brand">Chatty</a>
         </nav>
         <main className="messages">
-          <MessageList messages= {this.state.messages} />
+          <MessageList messages = {this.state.messages} />
         </main>
-        <ChatBar name = {this.state.currentUser.name}/>
+        <ChatBar name = {this.state.currentUser.name} onNewMessage = {this.onNewMessage} onNewUser = {this.onNewUser} />
       </div>
     );
   }
