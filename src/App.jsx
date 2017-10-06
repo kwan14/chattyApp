@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import ChatBar from './Chatbar.jsx';
 import MessageList from  './MessageList.jsx';
 import Message from './Message.jsx';
+import Active from './Active.jsx';
 
 class App extends Component {
 
@@ -11,7 +12,8 @@ class App extends Component {
     this.state = {
       currentUser: {name: "Bob"},
       messages: [],
-      notifications: []
+      notifications: [],
+      activeUsers: 0
     };
     this.onNewMessage = this.onNewMessage.bind(this);
     this.onNewUser = this.onNewUser.bind(this);
@@ -21,19 +23,28 @@ class App extends Component {
     this.state.webSocket = new WebSocket("ws://localhost:3001");
     this.state.webSocket.addEventListener('message', (event) => {
       const broadcastMessage = (JSON.parse(event.data));
-      if (broadcastMessage.type === "incomingMessage") {
-        const messages = this.state.messages.concat(broadcastMessage);
-        this.setState({messages : messages});
-      } else if (broadcastMessage.type === "incomingNotification") {
-        const notifications = this.state.notifications.concat(broadcastMessage);
-        this.setState({notifications : notifications});
+      switch(broadcastMessage.type) {
+        case "incomingMessage" :
+          const messages = this.state.messages.concat(broadcastMessage);
+          this.setState({messages : messages});
+          break;
+        case "incomingNotification" :
+          const notifications = this.state.notifications.concat(broadcastMessage);
+          this.setState({notifications : notifications});
+          break;
+        case "userCount" :
+          this.setState({activeUsers : broadcastMessage.userCount});
+          break;
+        default :
+          console.log("Unknown message type received.");
+          break;
       }
     })
   }
 
   onNewMessage(messageContent) {
     const newMessage = {username : this.state.currentUser.name, content : messageContent, type: "postMessage"};
-    if (true) {   //add error handling
+    if (this.state.webSocket.readyState === this.state.webSocket.OPEN) {
       this.state.webSocket.send(JSON.stringify(newMessage));
     }
   }
@@ -41,7 +52,7 @@ class App extends Component {
   onNewUser(username) {
     const newNotification = {content : this.state.currentUser.name + " changed their name to " + username, type : "postNotification"}
     this.state.currentUser.name = username;
-    if (true) {   //add error handling
+    if (this.state.webSocket.readyState === this.state.webSocket.OPEN) {
       this.state.webSocket.send(JSON.stringify(newNotification));
     }
   }
@@ -51,6 +62,7 @@ class App extends Component {
       <div>
         <nav className="navbar">
           <a href="/" className="navbar-brand">Chatty</a>
+          <Active users = {this.state.activeUsers} />
         </nav>
         <main className="messages">
           <Message notifications = {this.state.notifications} />
