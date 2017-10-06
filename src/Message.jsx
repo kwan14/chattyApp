@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 
 class Message extends Component {
 
+  //display notifications
   render() {
     const listNotifications = this.props.notifications.map((notification) =>
       <div key={notification.id} className="message">

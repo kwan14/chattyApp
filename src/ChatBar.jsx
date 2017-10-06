@@ -15,18 +15,21 @@ class ChatBar extends Component {
     this.onEnterUser = this.onEnterUser.bind(this);
   }
 
+  //monitor message textbox
   onContent(event) {
     this.setState({
       content : event.target.value
     });
   }
 
+  //monitor user textbox
   onUser(event) {
     this.setState({
       user : event.target.value
     });
   }
 
+  //accept a new message
   onEnter(event) {
     if(event.keyCode === 13) {
       this.props.onNewMessage(this.state.content);
@@ -34,13 +37,14 @@ class ChatBar extends Component {
     }
   }
 
+  //accept a new user name
   onEnterUser(event) {
     if(event.keyCode === 13) {
       this.props.onNewUser(this.state.user);
     }
   }
 
-
+  //display chatbar and accept messages, notifications
   render() {
     return (
       <footer className="chatbar">

@@ -23,6 +23,8 @@ class App extends Component {
     this.state.webSocket = new WebSocket("ws://localhost:3001");
     this.state.webSocket.addEventListener('message', (event) => {
       const broadcastMessage = (JSON.parse(event.data));
+
+      //route inbound broadcasts to the correct component using the message type
       switch(broadcastMessage.type) {
         case "incomingMessage" :
           const messages = this.state.messages.concat(broadcastMessage);
@@ -42,6 +44,7 @@ class App extends Component {
     })
   }
 
+  //process new messages from the chatbar
   onNewMessage(messageContent) {
     const newMessage = {username : this.state.currentUser.name, content : messageContent, type: "postMessage"};
     if (this.state.webSocket.readyState === this.state.webSocket.OPEN) {
@@ -49,6 +52,7 @@ class App extends Component {
     }
   }
 
+  //process new notifications from the chatbar
   onNewUser(username) {
     const newNotification = {content : this.state.currentUser.name + " changed their name to " + username, type : "postNotification"}
     this.state.currentUser.name = username;
