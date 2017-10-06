@@ -48,3 +48,7 @@ open http://localhost:3000
 * express
 * uuid
 * ws
+
+### Screenshots
+
+![Screenshot of chattyApp]( chattyApp/docs/chattyApp.png )
