@@ -51,4 +51,4 @@ open http://localhost:3000
 
 ### Screenshots
 
-![Screenshot of chattyApp]( chattyApp/docs/chattyApp.png )
+![Screenshot of chattyApp]( https://github.com/kwan14/chattyApp/blob/master/docs/chattyApp.png?raw=true )
