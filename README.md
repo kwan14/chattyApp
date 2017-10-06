@@ -8,7 +8,7 @@ A clone of Slack.
 Clone the repository.
 
 ```
-git clone git@github.com:git@github.com:kwan14/chattyApp.git
+git clone git@github.com:kwan14/chattyApp.git
 
 ```
 
